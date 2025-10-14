@@ -11,7 +11,9 @@
                  [com.datomic/datomic-pro "1.0.6711"]
                  [http-kit "2.8.1"]
                  [compojure "1.7.2"]
-                 [cheshire "6.1.0"]]
+                 [cheshire "6.1.0"]
+                 [ring/ring-defaults "0.7.0"]
+                 [ring-cors "0.1.13"]]
   
   :main ^:skip-aot corenet-backend.core
   :target-path "target/%s"
