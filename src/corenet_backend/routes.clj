@@ -2,7 +2,8 @@
   (:require
    [cheshire.core :refer :all]
    [compojure.core :refer :all]
-   [compojure.route :as route]))
+   [compojure.route :as route]
+   [corenet-backend.services.postCreate :refer :all]))
 
 
 (defn home-route []
@@ -13,23 +14,31 @@
 
 
 (defn create-post-route []
-   (POST "/create-post" [titulo conteudo]
-     (if (and titulo conteudo)
-       (try
-         {:status 200
-          :headers {"Content-Type" "application/json"}
-          :body (generate-string {:msg "Postagem realizada com sucesso!"
-                                  :titulo titulo
-                                  :conteudo conteudo})}
-         (catch Exception e
-           {:status 500
-            :headers {"Content-Type" "application/json"}
-            :body (generate-string {:msg "Ocorreu um erro ao tentar realizar a criação da postagem."})}))
-       {:status 400
-        :headers {"Content-Type" "application/json"}
-        :body (generate-string {:msg "Parâmetros 'titulo' e 'conteudo' são obrigatórios."})})))
+  (POST "/create-post" [titulo conteudo]
+    (if (and titulo conteudo)
+      (if (and (>= (count titulo) 6) (>= (count conteudo) 6))
+        (try
+          (createPost titulo conteudo)
+          (catch Exception e
+            {:status 500
+             :headers {"Content-Type" "application/json"}
+             :body (generate-string
+                     {:msg "Ocorreu um erro ao tentar realizar a criação da postagem."})}))
+        {:status 400
+         :headers {"Content-Type" "application/json"}
+         :body (generate-string
+                 {:msg "Os campos 'título' e 'conteúdo' devem ter no mínimo 6 caracteres."})})
+      {:status 400
+       :headers {"Content-Type" "application/json"}
+       :body (generate-string
+               {:msg "Parâmetros 'titulo' e 'conteudo' são obrigatórios."})})))
+
+      
   
 (defn notfound-route []
 (route/not-found {:status 404
                   :headers {"Content-Type" "application/json"}
                   :body (generate-string {:msg "Not Found 404"})}))
+
+
+;; Receber entrega do Guilherme: 2 resmas de papel e passar o cartão que ele esntregou no Crédito.
