@@ -3,13 +3,14 @@
    [cheshire.core :refer :all]
    [compojure.core :refer :all]
    [compojure.route :as route]
-   [corenet-backend.services.postCreate :refer :all]))
+   [corenet-backend.services.postCreate :refer :all]
+   [corenet-backend.db.db :refer :all]))
 
 
 (defn home-route []
   (GET "/" []
        {:status 200
-        :header {"Content-Type" "application/json"}
+        :headers {"Content-Type" "application/json"}
         :body (generate-string {:msg "Welcome To CoreNet API V1"})}))
 
 
@@ -18,7 +19,7 @@
     (if (and titulo conteudo)
       (if (and (>= (count titulo) 6) (>= (count conteudo) 6))
         (try
-          (createPost titulo conteudo)
+          (create-post titulo conteudo)
           (catch Exception e
             {:status 500
              :headers {"Content-Type" "application/json"}
@@ -33,7 +34,13 @@
        :body (generate-string
                {:msg "Parâmetros 'titulo' e 'conteudo' são obrigatórios."})})))
 
-      
+
+(defn all-blogs-route []
+  (GET "/all-blogs" []
+        {:status 200
+         :headers {"Content-Type" "application/json"}
+         :body (generate-string {:blogs(find-all-blogs-json)})}))
+
   
 (defn notfound-route []
 (route/not-found {:status 404
@@ -41,4 +48,3 @@
                   :body (generate-string {:msg "Not Found 404"})}))
 
 
-;; Receber entrega do Guilherme: 2 resmas de papel e passar o cartão que ele esntregou no Crédito.

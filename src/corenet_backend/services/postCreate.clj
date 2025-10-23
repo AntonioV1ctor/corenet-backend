@@ -1,30 +1,15 @@
 (ns corenet-backend.services.postCreate
   (:require
-   [cheshire.core :refer :all]
-   [datomic.api :as d]))
-
-(def db-uri "datomic:dev://localhost:4334/corenet")
-(d/create-database db-uri)
-(def conn (d/connect db-uri))
-
-(def schema
-  [{:db/ident       :blog/titulo
-    :db/valueType   :db.type/string
-    :db/cardinality :db.cardinality/one
-    :db/doc         "titulo da postagem"}
-   
-   {:db/ident       :blog/conteudo
-    :db/valueType   :db.type/string
-    :db/cardinality :db.cardinality/one
-    :db/doc         "titulo da postagem"}])
+   [corenet-backend.db.db :refer :all]
+   [cheshire.core :refer :all]))
 
 
 
 (defn create-post [titulo conteudo]
   (try
-    (d/transact conn schema)
-    (d/transact conn[{:blog/titulo titulo
-                      :blog/conteudo conteudo}])
+    (transactor conn schema)
+    (transactor conn [{:blog/titulo titulo
+                       :blog/conteudo conteudo}])
     {:status 200
      :headers {"Content-Type" "application/json"}
      :body (generate-string
@@ -36,7 +21,7 @@
        :headers {"Content-Type" "application/json"}
        :body (generate-string {:msg "Ocorreu um erro ao salvar o título e o conteúdo no banco de dados. Tente novamente!"})})))
 
-(d/q '[:find ])
 
-;;(create-post "TEST12347" "TEST42345")
+
+;;(create-post "Como fazer um jogo" "Para começar a fazer um jog...")
 ;;(d/transact conn [{:blog/titulo "TEST12345" :blog/conteudo "TEST112233"}])
