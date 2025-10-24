@@ -4,6 +4,7 @@
    [cheshire.core :refer :all]))
 
 (def db-uri "datomic:dev://localhost:4334/corenet")
+;;(d/delete-database "datomic:dev://localhost:4334/corenet")
 (d/create-database db-uri)
 (def conn (d/connect db-uri))
 
