@@ -24,9 +24,23 @@
 (defn transactor [conect array]
   (d/transact conect array))
 
-(def all-blogs '[:find ?title ?content
-                    :where [?e :blog/titulo ?title]
-                           [?e :blog/conteudo ?content]])
+(def all-blogs '[:find ?e ?title ?content
+    :where
+    [?e :blog/titulo ?title]
+    [?e :blog/conteudo ?content]])
+
+
+
+(defn find-blog-by-id [id]
+  (try 
+    (let [db (d/db conn)
+          e  (d/entity db id)]
+      {:id (:db/id e)
+       :titulo (:blog/titulo e)
+       :conteudo (:blog/conteudo e)})
+    (catch Exception e
+      "Ocorreu um erro ao consultar o Blog que corresponde ao seguinte ID:"id)))
+
 
 
 (defn find-all-blogs []
@@ -39,12 +53,17 @@
 
 (defn find-all-blogs-json []
   (try
-    (map (fn [[title content]]
-           {:titulo title
-              :conteudo content})
-         (find-all-blogs))
+    (mapv (fn [[id title content]]
+            {:id id
+             :titulo title
+             :conteudo content})
+          (find-all-blogs))
     (catch Exception e
-      "Ocorreu um erro ao tentar trazer os Blogs")))
+      {:erro "Ocorreu um erro ao tentar trazer os Blogs"
+       :detalhe (.getMessage e)})))
 
+
+
+;;(find-blog-by-id "17592186045419")
 ;;(find-all-blogs-json)
 ;;(find-all-blogs)

@@ -9,10 +9,11 @@
 
 (defroutes app
   (context "/api/v1" []
-  (home-route)         ;; /              GET
-  (create-post-route)  ;; /create-post   POST
-  (all-blogs-route)    ;; /all-blogs     GET
-  (notfound-route)))   ;; Not Found 404  GET/POST
+  (home-route)               ;; /              GET
+  (create-post-route)        ;; /create-post   POST
+  (all-blogs-route)          ;; /all-blogs     GET
+  (search-blog-byID-route)   ;; /blog-id       GET
+  (notfound-route)))         ;; Not Found 404  GET/POST
 
 
 

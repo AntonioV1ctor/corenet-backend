@@ -41,7 +41,13 @@
          :headers {"Content-Type" "application/json"}
          :body (generate-string {:blogs(find-all-blogs-json)})}))
 
-  
+(defn search-blog-byID-route []
+  (GET "/blog-id" [id]
+       {:status 200
+        :headers {"Content-Type" "application/json"}
+        :body (generate-string {:blogs(find-blog-by-id (parse-long id))})}))
+
+
 (defn notfound-route []
 (route/not-found {:status 404
                   :headers {"Content-Type" "application/json"}
